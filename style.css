@@ -1,0 +1,129 @@
+body{
+  background-color: #E0F7FA;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.calculator-container {
+    background-color: #FFFFFF;
+    padding: 32px;
+    border-radius: 15px;
+    max-width: 800px;
+    width: 90%;/*
+    For viewports narrower than what max-width would allow (effectively, viewports narrower than 800px / 0.90 = ~889px), the calculator will take up 90% of the available width. This ensures it scales down gracefully on smaller screens and doesn't touch the edges of the viewport immediately.
+    */
+    margin: 50px auto;
+    box-shadow: 0 15px 30px rgba(0, 71, 75, 0.15);
+    /* x y blur color*/ 
+    box-sizing: border-box; 
+}
+
+.input-field{
+  width: 100%;
+  padding: 10px 12px;
+  margin: 0 0 16px 0; /*top right bottom left*/
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem; /* 1rem usually matches bpdy font size */
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+label,
+.form-control > p{
+  display: block;
+  font-size: 0.9rem;/* Makes labels slightly smaller than input text (1rem) */
+  font-weight: 600;
+  color: #4b5a6a;
+  margin-bottom: 6px;
+
+} 
+
+.tip-percent-btn{
+  padding: 10px;
+  width: 100%;
+  background-color: #0047ab;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem; /* Slightly larger font size for button text */
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;/* Smooth transition for hover/active states */
+
+}
+
+.tip-percent-btn:hover{
+  background-color: #26c2ad;
+  color: #00474b;
+}
+
+.tip-percent-btn.active {
+  background-color: #9fe8df;
+  color: #00474b;
+}
+
+.output-section{
+  background-color: #00474b;
+  padding: 30px 25px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.result-line{
+  margin-bottom: 25px;
+}
+
+.output-section .result-line:last-of-type{
+
+  margin-bottom: 30px;
+  /*specifically targets the last result-line within the output-section (which would be the "Total / person" line) and gives it a slightly larger bottom margin. This ensures there's enough space before the Reset button that will follow*/
+}
+
+.result-label p{
+  color: #ffffff;
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: 600;
+
+}
+
+.result-label span{
+  color: #7fa8a9;
+  font-size: 0.8rem;
+  display: block;
+}
+
+.result-value span {
+  color: #26c2ad;
+  font-size: 2.2rem;
+  font-weight: 700;
+  display: block;
+  text-align: right;
+}
+
+.reset-btn {
+
+  width: 100%;                
+  padding: 12px;
+  background-color: #26C2AD; 
+  color: #00474B;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 700;          
+  text-transform: uppercase;/* Makes "RESET" text more prominent and command-like */
+  text-align: center; 
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.reset-btn:hover {
+    background-color: #9FE8DF;
+    color: #00474B;
+}
+
+.reset-btn:active {
+    background-color: #00474B;
+    color: #9FE8DF;
+}
