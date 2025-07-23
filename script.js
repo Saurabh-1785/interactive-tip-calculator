@@ -46,18 +46,14 @@ peopleInput.addEventListener('input', calculateTip);
 
 if (resetButton) {
   resetButton.addEventListener('click', () => {
-    console.log('Reset button clicked!');
     resetCalculator();
   });
-} else {
-  console.error('Error: Reset button element not found. Cannot add event listener.');
 }
 
 
 //FUNCTION FOR CALCULATION LOGIC
 
 function calculateTip() {
-  console.log('--- Executing calculateTip:---');
 
 
   // --- 1. Retrieve Input Values (Strings) ---
@@ -107,7 +103,6 @@ function calculateTip() {
   } 
   
   isTipValid = !isNaN(actualTipPercent) && actualTipPercent >= 0;
-  console.log(`Validation - Actual Tip Percent (${actualTipPercent}) Is Valid: ${isTipValid}`);
 
   
   // --- 5. Calculate Total Tip ---
@@ -136,7 +131,6 @@ function calculateTip() {
     }else {
       tipAmountPerPerson = 0;
       totalAmountPerPerson = 0;
-      console.warn("Per-person calculation aborted: totalBillAmount was NaN despite other flags.");
     }
   } else {
       if (!isPeopleValid) {
@@ -153,8 +147,8 @@ function calculateTip() {
   // --- 8. Format Results for Display ---
   const formattedTipAmount = tipAmountPerPerson.toFixed(2);
   const formattedTotalAmount = totalAmountPerPerson.toFixed(2);
-  const displayTipAmount = `$${formattedTipAmount}`;
-  const displayTotalAmount = `$${formattedTotalAmount}`;
+  const displayTipAmount = `\u20B9${formattedTipAmount}`;
+  const displayTotalAmount = `\u20B9${formattedTotalAmount}`;
 
   // --- 9. Update DOM Text Content ---
   if (tipAmountDisplay) { 
@@ -210,12 +204,12 @@ function resetCalculator() {
 
   // 5. Reset the text content of the tip amount/person display to '$0.00'.
   if (tipAmountDisplay) {
-    tipAmountDisplay.textContent = '$0.00';
+    tipAmountDisplay.textContent = '\u20B9 0.00';
   }
 
   // 6. Reset the text content of the total/person display to '$0.00'.
   if (totalAmountDisplay) {
-    totalAmountDisplay.textContent = '$0.00';
+    totalAmountDisplay.textContent = '\u20B9 0.00';
   }
 
   // 7. Remove any validation error styling from input fields.
