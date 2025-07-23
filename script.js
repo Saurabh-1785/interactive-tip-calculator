@@ -44,6 +44,15 @@ customTipInput.addEventListener('input', () => {
 
 peopleInput.addEventListener('input', calculateTip);
 
+if (resetButton) {
+  resetButton.addEventListener('click', () => {
+    console.log('Reset button clicked!');
+    resetCalculator();
+  });
+} else {
+  console.error('Error: Reset button element not found. Cannot add event listener.');
+}
+
 
 //FUNCTION FOR CALCULATION LOGIC
 
@@ -53,7 +62,7 @@ function calculateTip() {
 
   // --- 1. Retrieve Input Values (Strings) ---
   const billValueStr = billInput.value;
-  const peopleValueStr = customTipInput.value;
+  const peopleValueStr = peopleInput.value;
   const customTipValueStr = customTipInput.value;
   let selectedButtonTipStr = null;
   const activeButton = document.querySelector('.tip-percent-btn.active');
@@ -68,71 +77,86 @@ function calculateTip() {
   // Convert selected button tip only if a button is actually active (selectedButtonTipStr is not null)
   const selectedButtonTipPercent = selectedButtonTipStr ? parseFloat(selectedButtonTipStr) : null;
 
+  
+  // --- 3. INPUT VALIDATION SECTION ---
+
   // Check if billAmount is a valid number AND is not negative.
   const isBillValid = !isNaN(billAmount) && billAmount >= 0;
+
   let isTipValid = false; // Placeholder
-  let isPeopleValid = false; // Placeholder
+
+  const isPeopleValid = !isNaN(numberOfPeople) && numberOfPeople > 0 && Number.isInteger(numberOfPeople);
+
+  const isCustomTipInputValid = customTipValueStr === '' || (!isNaN(customTipPercent) && customTipPercent >= 0);
 
 
 
-  // --- 3. Determine Tip Percentage to Use ---
+  // --- 4. Determine Tip Percentage to Use ---
   let actualTipPercent = 0;
 
-  // Check if the custom tip input has a valid, non-negative number.
-  // isNaN() checks if a value is "Not a Number". !isNaN() means it IS a number.
-  if (!isNaN(customTipPercent) && customTipPercent >= 0) {
-    // Priority 1: Use the valid custom tip percentage.
+  if (customTipValueStr !== '' && !isNaN(customTipPercent) && customTipPercent >= 0) { // Prioritize valid custom input
     actualTipPercent = customTipPercent;
-    console.log("Using Custom Tip Percentage:", actualTipPercent);
-  }
-  // Otherwise (if custom tip is invalid or empty), check the selected button.
-  // We check selectedButtonTipPercent is not null (a button was selected)
-  // AND it's a valid number (!isNaN) AND it's non-negative.
-  else if (selectedButtonTipPercent !== null && !isNaN(selectedButtonTipPercent) && selectedButtonTipPercent >= 0) {
-    // Priority 2: Use the valid selected button's tip percentage.
-    actualTipPercent = selectedButtonTipPercent;
-    console.log("Using Selected Button Tip Percentage:", actualTipPercent);
-  }
-  // Default: If neither custom nor button provided a valid percentage,
-  // actualTipPercent remains at its initial value of 0.
+  } else if (customTipValueStr === '') { // If custom input is empty, check buttons
+    const activeButton = document.querySelector('.tip-percent-btn.active');
+    if (activeButton) {
+      const selectedButtonTipPercent = parseFloat(activeButton.dataset.tip);
+      if (!isNaN(selectedButtonTipPercent) && selectedButtonTipPercent >= 0) {
+        actualTipPercent = selectedButtonTipPercent;
+      }
+    }
+  } 
   
-  // --- 4. Calculate Total Tip ---
+  isTipValid = !isNaN(actualTipPercent) && actualTipPercent >= 0;
+  console.log(`Validation - Actual Tip Percent (${actualTipPercent}) Is Valid: ${isTipValid}`);
+
+  
+  // --- 5. Calculate Total Tip ---
   let totalTipPercent = 0;
 
   if (!isNaN(billAmount) && billAmount >= 0) {
     totalTipAmount = billAmount * (actualTipPercent / 100);
   }
   
-  // --- 5. Calculate Total Bill ---
-  const totalBillAmount = billAmount + totalTipAmount;
+  // --- 6. Calculate Total Bill ---
+  let totalBillAmount = 0;
 
-  // --- 6. Calculate Tip Per Person (with Validation) ---
+  if (isBillValid) { 
+    totalBillAmount = billAmount + totalTipAmount;
+  }
+
+  // --- 7. Calculate Per Person Amount (with Validation) ---
   let tipAmountPerPerson = 0;
-  if (!isNaN(totalTipAmount) && !isNaN(numberOfPeople) && numberOfPeople > 0) {
-    tipAmountPerPerson = totalTipAmount / numberOfPeople;
-  } else {
-    console.warn("Cannot calculate tip per person. Invalid inputs (Tip:", totalTipAmount, ", People:", numberOfPeople, ")");
-  }
- 
-  // --- 7. Calculate Total Per Person (with Validation) ---
   let totalAmountPerPerson = 0;
-  if (!isNaN(totalBillAmount) && !isNaN(numberOfPeople) && numberOfPeople > 0) {
-    // If inputs are valid, perform the division.
-    totalAmountPerPerson = totalBillAmount / numberOfPeople;
+
+
+  if (isBillValid && isTipValid && isPeopleValid) {
+    if (!isNaN(totalBillAmount)) { 
+      tipAmountPerPerson = totalTipAmount / numberOfPeople;
+      totalAmountPerPerson = totalBillAmount / numberOfPeople;
+    }else {
+      tipAmountPerPerson = 0;
+      totalAmountPerPerson = 0;
+      console.warn("Per-person calculation aborted: totalBillAmount was NaN despite other flags.");
+    }
   } else {
-    // If numberOfPeople is invalid (0, negative, NaN) or totalBillAmount is NaN,
-    // keep totalAmountPerPerson at the default 0.
-    console.warn("Cannot calculate total per person. Invalid inputs (Total Bill:", totalBillAmount, ", People:", numberOfPeople, ")");
+      if (!isPeopleValid) {
+        console.warn(`Cannot calculate per-person amounts. Number of People (${numberOfPeople}) is not a positive integer.`);
+
+      } else if (!isBillValid) {
+        console.warn("Cannot calculate per-person amounts due to invalid Bill Amount.");
+
+      } else if (!isTipValid) {
+        console.warn("Cannot calculate per-person amounts due to invalid Tip Percentage.");
+      }
   }
 
-  // Use toFixed(2) to ensure two decimal places. This returns a STRING.
+  // --- 8. Format Results for Display ---
   const formattedTipAmount = tipAmountPerPerson.toFixed(2);
   const formattedTotalAmount = totalAmountPerPerson.toFixed(2);
-
-  // Prepend the currency symbol (e.g., '$') to the formatted strings.
   const displayTipAmount = `$${formattedTipAmount}`;
   const displayTotalAmount = `$${formattedTotalAmount}`;
 
+  // --- 9. Update DOM Text Content ---
   if (tipAmountDisplay) { 
     tipAmountDisplay.textContent = displayTipAmount;
   }
@@ -140,7 +164,78 @@ function calculateTip() {
     totalAmountDisplay.textContent = displayTotalAmount;
   }
 
+  if (billInput) {
+    billInput.classList.toggle('error', !isBillValid);
+  
+  }
+
+    if (peopleInput) {
+      peopleInput.classList.toggle('error', !isPeopleValid);
+      
+    }
+
+    if (customTipInput) {
+    
+    customTipInput.classList.toggle('error', !isCustomTipInputValid);
+    }
+
+
+}
+
+function resetCalculator() {
+
+  // 1. Set the value of the bill input to empty.
+  if (billInput) {
+    billInput.value = '';
+  }
+
+   // 2. Clear the custom tip input value.
+  if (customTipInput) {
+    customTipInput.value = '';
+  }
+
+  // 3. Deselect any active tip percentage buttons.
+
+  if (tipButtons && tipButtons.length > 0) {
+    tipButtons.forEach(button => {
+      button.classList.remove('active');
+    });
+  }
+
+  // 4. Set the value of the number of people input to empty.
+
+  if (peopleInput) {
+    peopleInput.value = '';
+  }
+
+  // 5. Reset the text content of the tip amount/person display to '$0.00'.
+  if (tipAmountDisplay) {
+    tipAmountDisplay.textContent = '$0.00';
+  }
+
+  // 6. Reset the text content of the total/person display to '$0.00'.
+  if (totalAmountDisplay) {
+    totalAmountDisplay.textContent = '$0.00';
+  }
+
+  // 7. Remove any validation error styling from input fields.
+
+  if (billInput) {
+    billInput.classList.remove('error');
+  }
+  if (customTipInput) {
+    customTipInput.classList.remove('error');
+  }
+  if (peopleInput) {
+    peopleInput.classList.remove('error');
+  }
+
+
+
+
 }
 
 
-document.addEventListener('DOMContentLoaded', calculateTip);
+document.addEventListener('DOMContentLoaded', () =>{
+  calculateTip()
+});

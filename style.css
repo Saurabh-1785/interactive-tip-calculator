@@ -6,6 +6,12 @@ body{
   margin: 0;
 }
 
+header h1{
+  display: flex;
+  justify-content: center;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: clamp(20px,4vw,50px);
+}
 .calculator-container {
     background-color: #FFFFFF;
     padding: 32px;
@@ -152,4 +158,81 @@ label,
 .reset-btn:active {
     background-color: #00474B;
     color: #9FE8DF;
+}
+
+.input-field-group input.error {
+  border-color: #E17457; 
+  border-width: 2px;
+}
+
+@media screen and (max-width: 600px) {
+
+  .calculator-container { 
+    flex-direction: column;
+    align-items: stretch; 
+    padding: 15px;
+  }
+
+  .inputs-section,
+  .outputs-section { 
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  .outputs-section {
+    margin-bottom: 0;
+  }
+
+  .input-label {
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+  }
+
+  input[type="number"]#bill-input,
+  input[type="number"]#custom-tip-input,
+  input[type="number"]#people-input { 
+    font-size: 1rem;     
+    padding: 10px 12px;
+  }
+
+  .input-field-group { 
+    margin-bottom: 16px;
+  }
+
+  .tip-percent-btn { 
+    font-size: 0.9rem;  
+    padding: 10px 8px; 
+  }
+
+  .output-description .per-person-label { 
+    font-size: 0.8rem;  
+  }
+
+  label {
+    font-size: 0.9rem; /* Example: make labels slightly smaller or adjust to fit */
+    /* You might also need to adjust margin-bottom for labels if spacing is an issue */
+    /* margin-bottom: 4px; */
+  }
+
+  #reset-button { 
+    font-size: 1rem;
+    padding: 10px;
+    width: 100%;
+    margin-top: 20px; 
+  }
+
+  .result-value, 
+  #tip-amount-display,
+  #total-amount-display {
+    font-size: 1.75rem;
+  }
+
+  .input-group {
+    margin-bottom: 15px;
+  }
+
+  .output-label {
+    font-size: 0.85rem;
+  }
 }
