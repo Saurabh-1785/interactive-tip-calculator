@@ -26,12 +26,12 @@
           
           <div class="tip-buttons-container">
 
-            <button type="button" class="tip-percent-btn" data-tip="5">5%</button>
+            <button type="button" class="tip-percent-btn" data-tip="5">5%</button> <!--we define here data-tip so that while using js we dont have to read the value, its numeric value is stored in data-tip-->
             <button type="button" class="tip-percent-btn" data-tip="10">10%</button>
             <button type="button" class="tip-percent-btn" data-tip="15">15%</button>
             <button type="button" class="tip-percent-btn" data-tip="25">25%</button>
             <button type="button" class="tip-percent-btn" data-tip="50">50%</button>
-            <input type="number" id="custom-tip" class="input-field" placeholder="Custom">
+            <input type="number" id="custom-tip" class="input-field" placeholder="Custom" min="0">
               
           </div>
         </div>
