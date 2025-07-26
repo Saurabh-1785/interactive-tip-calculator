@@ -18,7 +18,7 @@ billInput.addEventListener('input', calculateTip);
 
 tipButtons.forEach((button) => {
   button.addEventListener('click', (event) =>{
-    const clickedButton = event.target; // or = button
+    const clickedButton = event.target; // or = button| event.target = the actual element that was clicked.
     const tipPercentage = clickedButton.dataset.tip;
     //dataset Property: This is a standard way to access custom data attributes (data-*) defined on an HTML element.
     // clickedButton.dataset.tip: This specifically looks for an attribute named data-tip on the clicked button element and retrieves its value as a string.
@@ -26,9 +26,15 @@ tipButtons.forEach((button) => {
     
     tipButtons.forEach(btn => btn.classList.remove('active'));
     // Add 'active' class to the clicked button
+    //btn.classList.remove('active') removes the active class from each.
+    //This ensures only one button will look active at a time.
+
     clickedButton.classList.add('active');
     // Clear the custom tip input when a button is clicked
+    //Now we add active to the clicked button:
+
     customTipInput.value = '';
+    //When a button is clicked:Clear the custom tip input ("") so it doesn’t conflict with chosen button.
 
     calculateTip();
   });
@@ -36,7 +42,6 @@ tipButtons.forEach((button) => {
 
 customTipInput.addEventListener('input', () => {
   tipButtons.forEach(btn => btn.classList.remove('active'));
-  console.log(`Custom tip: ${customTipInput.value}%`);
 
   calculateTip();
 
@@ -44,11 +49,8 @@ customTipInput.addEventListener('input', () => {
 
 peopleInput.addEventListener('input', calculateTip);
 
-if (resetButton) {
-  resetButton.addEventListener('click', () => {
-    resetCalculator();
-  });
-}
+resetButton.addEventListener('click',resetCalculator);
+
 
 
 //FUNCTION FOR CALCULATION LOGIC
@@ -57,21 +59,23 @@ function calculateTip() {
 
 
   // --- 1. Retrieve Input Values (Strings) ---
-  const billValueStr = billInput.value;
+  const billValueStr = billInput.value; //stores in string type
   const peopleValueStr = peopleInput.value;
   const customTipValueStr = customTipInput.value;
   let selectedButtonTipStr = null;
   const activeButton = document.querySelector('.tip-percent-btn.active');
+
   if (activeButton) {
     selectedButtonTipStr = activeButton.dataset.tip;
   }
 
   // --- 2. Convert to Numbers ---
-  const billAmount = parseFloat(billValueStr);
-  const numberOfPeople = parseFloat(peopleValueStr); // Note: Will need validation later (e.g., ensure integer > 0)
+  const billAmount = parseFloat(billValueStr); 
+  const numberOfPeople = parseFloat(peopleValueStr); 
   const customTipPercent = parseFloat(customTipValueStr);
   // Convert selected button tip only if a button is actually active (selectedButtonTipStr is not null)
-  const selectedButtonTipPercent = selectedButtonTipStr ? parseFloat(selectedButtonTipStr) : null;
+  const selectedButtonTipPercent = selectedButtonTipStr ? parseFloat(selectedButtonTipStr) : null; 
+  //if selectedButtonTipStr is not null(its active), it will convert the string to number, else it will asssign selectedButtonTipPercent=null
 
   
   // --- 3. INPUT VALIDATION SECTION ---
@@ -132,16 +136,6 @@ function calculateTip() {
       tipAmountPerPerson = 0;
       totalAmountPerPerson = 0;
     }
-  } else {
-      if (!isPeopleValid) {
-        console.warn(`Cannot calculate per-person amounts. Number of People (${numberOfPeople}) is not a positive integer.`);
-
-      } else if (!isBillValid) {
-        console.warn("Cannot calculate per-person amounts due to invalid Bill Amount.");
-
-      } else if (!isTipValid) {
-        console.warn("Cannot calculate per-person amounts due to invalid Tip Percentage.");
-      }
   }
 
   // --- 8. Format Results for Display ---
@@ -151,42 +145,31 @@ function calculateTip() {
   const displayTotalAmount = `\u20B9${formattedTotalAmount}`;
 
   // --- 9. Update DOM Text Content ---
-  if (tipAmountDisplay) { 
-    tipAmountDisplay.textContent = displayTipAmount;
-  }
-  if (totalAmountDisplay) {
-    totalAmountDisplay.textContent = displayTotalAmount;
-  }
-
-  if (billInput) {
-    billInput.classList.toggle('error', !isBillValid);
+ 
+  tipAmountDisplay.textContent = displayTipAmount;
   
-  }
+  totalAmountDisplay.textContent = displayTotalAmount;
 
-    if (peopleInput) {
-      peopleInput.classList.toggle('error', !isPeopleValid);
+  billInput.classList.toggle('error', !isBillValid);
+ 
+  peopleInput.classList.toggle('error', !isPeopleValid);
       
-    }
-
-    if (customTipInput) {
+  customTipInput.classList.toggle('error', !isCustomTipInputValid);
     
-    customTipInput.classList.toggle('error', !isCustomTipInputValid);
-    }
-
 
 }
 
 function resetCalculator() {
 
   // 1. Set the value of the bill input to empty.
-  if (billInput) {
-    billInput.value = '';
-  }
+
+  billInput.value = '';
+ 
 
    // 2. Clear the custom tip input value.
-  if (customTipInput) {
-    customTipInput.value = '';
-  }
+
+  customTipInput.value = '';
+  
 
   // 3. Deselect any active tip percentage buttons.
 
@@ -198,16 +181,15 @@ function resetCalculator() {
 
   // 4. Set the value of the number of people input to empty.
 
-  if (peopleInput) {
-    peopleInput.value = '';
-  }
+  peopleInput.value = '';
 
-  // 5. Reset the text content of the tip amount/person display to '$0.00'.
+
+  // 5. Reset the text content of the tip amount/person display to '0.00'.
   if (tipAmountDisplay) {
     tipAmountDisplay.textContent = '\u20B9 0.00';
   }
 
-  // 6. Reset the text content of the total/person display to '$0.00'.
+  // 6. Reset the text content of the total/person display to '0.00'.
   if (totalAmountDisplay) {
     totalAmountDisplay.textContent = '\u20B9 0.00';
   }
@@ -224,12 +206,10 @@ function resetCalculator() {
     peopleInput.classList.remove('error');
   }
 
-
-
-
 }
 
 
 document.addEventListener('DOMContentLoaded', () =>{
   calculateTip()
 });
+//It runs your code as soon as the DOM (all HTML elements) is ready to be accessed.
